@@ -21,7 +21,6 @@ export default function Modal({
             <RiCloseLine />
           </button>
         )}
-        {/* fill in the title and children in your other code */}
         <h1 className="font-bold text-lg">{title}</h1>
         {children}
       </div>

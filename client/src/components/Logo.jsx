@@ -1,5 +1,4 @@
 import { RiBuilding2Fill } from "@remixicon/react";
-import React from "react";
 import { Link } from "react-router";
 
 export default function Logo({ classname }) {

@@ -1,11 +1,10 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
 
-export default function PublicRoutes({ children, accessToken }) {
+export function PublicRoutes({ children, accessToken }) {
   const location = useLocation();
   const navigate = useNavigate();
   const from = location.state?.from || "/dashboard";
-
   useEffect(() => {
     if (accessToken) {
       navigate(from, {
@@ -20,7 +19,7 @@ export default function PublicRoutes({ children, accessToken }) {
 export function PrivateRoutes({ children, accessToken, user }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const from = location.state?.from || "/account/login";
+  const from = location.state?.from || "/account/signin";
 
   useEffect(() => {
     if (!accessToken) {
@@ -29,16 +28,15 @@ export function PrivateRoutes({ children, accessToken, user }) {
         replace: true,
       });
     }
-    // handle redirect to verify account
     if (
-        user && 
-        user.isVerified && 
-        user.role === "patient" &&
-        !user.isCompletedOnboard &&
-        location.pathname !== "/patient-onboard"
+      user &&
+      user.isVerified &&
+      user.role === "patient" &&
+      !user?.isCompletedOnboard &&
+      location.pathname !== "/patients-onboard"
     ) {
-      navigate("/patient-onboard", {
-        state: {from: location},
+      navigate("/patients-onboard", {
+        state: { from: location },
         replace: true,
       });
     }
@@ -47,21 +45,23 @@ export function PrivateRoutes({ children, accessToken, user }) {
   return children;
 }
 
-export function VerifiedRoutes ({children, accessToken, user}) {
-    const location = useLocation();
+export function VerifiedRoutes({ children, accessToken, user }) {
+  const location = useLocation();
   const navigate = useNavigate();
-  const from = location.state?.from || "/account/login";
+  const from = location.state?.from || "/account/signin";
 
-    useEffect(() => {
-        if (!accessToken) {
-            navigate (from, {
-                state: {from: location},
-                replace: true,
-            })
-        }
-        if (user && !user.isVerified && location.pathname !== "/verify-account") {
-            navigate("/verify-account");
-        }
-    }, [accessToken, from, location, navigate, user]);
-    return children;
+  useEffect(() => {
+    if (!accessToken) {
+      navigate(from, {
+        state: { from: location },
+        replace: true,
+      });
+    }
+    //handle redirect to verify account
+    if (user && !user.isVerified && location.pathname !== "/verify-account") {
+      navigate("/verify-account");
+    }
+  }, [accessToken, from, location, navigate, user]);
+
+  return children;
 }

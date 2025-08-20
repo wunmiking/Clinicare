@@ -1,10 +1,9 @@
 import express from "express";
-import { authorizedRoles, verifyAuth } from "../middlewares/authenticate.js";
+import { verifyAuth, authorizedRoles } from "../middlewares/authenticate.js";
 import { validateFormData } from "../middlewares/validateForm.js";
 import { validatePatientSchema } from "../utils/dataSchema.js";
-import { clearCache } from "../middlewares/cache.js";
+import { clearCache, cacheMiddleware } from "../middlewares/cache.js";
 import { register } from "../controllers/patientController.js";
-
 
 const router = express.Router();
 

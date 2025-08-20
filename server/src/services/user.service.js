@@ -1,96 +1,83 @@
-import bcrypt from "bcryptjs";
 import crypto from "crypto";
-import User from "../models/user.js";
-import responseHandler from "../utils/responseHandler.js";
-import mailService from "./email.service.js";
-import { refreshTokenLimit } from "../middlewares/rateLimit.js";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-
+import User from "../models/user.js";
+import mailService from "./email.service.js";
+import responseHandler from "../utils/responseHandler.js";
+import {
+  deleteFromCloudinary,
+  uploadToCloudinary,
+} from "../utils/cloudinary.js";
 const { errorResponse, notFoundResponse } = responseHandler;
 
 const userService = {
   register: async (userData, next) => {
-    // the next above will call the erroroResponse or notFoundResponse depending on what we specify
-    // the below is to check if the email already exists
+    //check if email already exists
     const emailExists = await User.findOne({ email: userData.email });
     if (emailExists) {
       return next(errorResponse("Email already exists", 400));
     }
-    // if it is a fresh userData email, then we proceed to creating our user
-    // handle verificationCode to be sent to user email (we will use an inbuilt module from node to generate our code)
-    const verificationCode = crypto.randomInt(100000, 999999).toString(); //this will generate six characters randomly
-    const verificationCodeExpiry = new Date(Date.now() + 3600000); // function for 1 hour code expiry
-    // the below handles password encryption, refer to npmjs documentation on bcryptjs
-    const salt = await bcrypt.genSalt(10); //this determines the degree of encryption
+    //if fresh new userData-email, then we proceed to creating our user
+    //handle verificationCode to be sent to user email
+    const verificationCode = crypto.randomInt(100000, 999999).toString(); //six characters randomly generated
+    const verificationCodeExpiry = new Date(Date.now() + 3600000); //1hr expiry
+    //handle password encryption
+    const salt = await bcrypt.genSalt(10); //degree of encryption
     const hashedPassword = await bcrypt.hash(userData.password, salt);
-
-    // proceed to creating our user - these below will be stored in our database
+    //proceed to creating our user
     const user = await User.create({
       ...userData,
       password: hashedPassword,
       verificationToken: verificationCode,
       verificationTokenExpiry: verificationCodeExpiry,
     });
-
-    // we are going to use a process from node process.nextTick - this allows us to not block synchronous operations - the api response won't wait for the email to be sent , even if email fails it won't affect the creation of the user
+    //proceed to sending email to user
+    //we are going to use a process from node process.nextTick - this allows us to not block synchronous operations - the api response wont wait for the email to be sent, even if email fails it won't affect the creation of the user
     process.nextTick(() => {
-      mailService.sendWelcomeMail(user).catch(console.error); //this will catch the email sending error
+      mailService.sendWelcomeMail(user).catch(console.error); //catch email sending error
     });
-
-    // if user could not be registered then we send a server error
+    //if user could not be registered, then we send a server error
     if (!user) {
       return next(errorResponse("User registration failed"));
     }
     return user; //send user to our controller
   },
-  // this will login the user
+  //login user
   login: async (userData, next) => {
-    // find user with email from the form
+    //find user with email from the form
     const user = await User.findOne({ email: userData.email }).select(
       "+password"
-    ); //select includes the field we want to have access to, in this case, the password
+    ); //select includes the field we want to have access to, in this case the password
     if (!user) {
       return next(errorResponse("Account not found", 401));
     }
-    // handle password
+    //handle password
     const isPasswordCorrect = await bcrypt.compare(
       userData.password,
       user.password
-    );
-    // userData.password is from the form which will be checked against user.password which is the one saved about the user in the database
+    ); //userData.passsword is from the form, while user.password is the password saved about the user in the database
     if (!isPasswordCorrect) {
       return next(errorResponse("Incorrect email or password", 401));
     }
     return user;
   },
   authenticateUser: async (userId, next) => {
-    // get userId from our jwt decoded token
+    //get userId from our jwt decoded token
     const user = await User.findById(userId);
     if (!user) {
       return next(notFoundResponse("User not found"));
     }
     return user;
   },
-  // logoutUser: async (req, res, next) => {
-  //   // reset the cookie maxAge value
-  //   res.cookie("userRefreshToken", "", {
-  //     maxAge: 0,
-  //     httpOnly: true,
-  //     secure: process.env.NODE_ENV === "production",
-  //     sameSite: process.env.NODE_ENV === "production" ? "home" : "lax",
-  //     path: "/",
-  //   });
-  //   return true;
-  // },
-  // get a new accessToken when current one expires
+  //get a new accessToken when current one expires
   refreshAccessToken: async (refreshToken, next) => {
     if (!refreshToken) {
-      return next(errorResponse("Refresh token has expired", 401));
+      return next(errorResponse("Refresh token is required", 401));
     }
-    // verify the refresh token
+    //verify the refresh token
     const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET_KEY);
     if (!decoded) {
-      return next(errorResponse("Refresh token is invalid", 401));
+      return next(errorResponse("Invalid refresh token", 401));
     }
     const user = await User.findById(decoded.id);
     if (!user) {
@@ -99,43 +86,42 @@ const userService = {
     return user;
   },
   verifyUserAccount: async (data, next) => {
-    // destructure our data
+    //destructure data
     const { userId, verificationToken } = data;
-    // find our user and get the verificationToken and verificationTokenExpiry attached/saved to this user
+    //find our user, and get the verifcationToken/Expiry saved to the user
     const user = await User.findById(userId).select(
       "+verificationToken +verificationTokenExpiry"
     );
     if (!user) {
       return next(notFoundResponse("Account not found"));
     }
-    // check if user is already verified
+    //check if user is already verified
     if (user.isVerified) {
       return next(errorResponse("Account is already verified", 400));
     }
-    // check if verificationToken saved matches the one received from the form
+    //check if verificationToken saved in db is same as the one received from the form
     if (user.verificationToken !== verificationToken) {
       return next(errorResponse("Invalid verification token", 400));
     }
-    // check for token expiry
+    //check for token expiry
     if (user.verificationTokenExpiry < new Date()) {
       user.verificationToken = undefined;
       user.verificationTokenExpiry = undefined;
       await user.save();
       return next(
         errorResponse(
-          "Verification token has expired, please get a new token",
+          "Verification token has expired, please get a new one",
           400
         )
       );
     }
-    // verify user if token has not expired
+    //verify user if token has not expired
     user.isVerified = true;
     user.verificationToken = undefined;
     user.verificationTokenExpiry = undefined;
     await user.save();
     return user;
   },
-
   resendVerificationToken: async (userId, next) => {
     const user = await User.findById(userId).select(
       "+verificationToken +verificationTokenExpiry"
@@ -146,8 +132,8 @@ const userService = {
     if (user.isVerified) {
       return next(notFoundResponse("Account already verified"));
     }
-    const verificationCode = crypto.randomInt(10000, 999999).toString();
-    const verificationCodeExpiry = new Date(Date.now() + 3600000); //1 hour
+    const verificationCode = crypto.randomInt(100000, 999999).toString();
+    const verificationCodeExpiry = new Date(Date.now() + 3600000); //1 hr
     user.verificationToken = verificationCode;
     user.verificationTokenExpiry = verificationCodeExpiry;
     await user.save();
@@ -166,9 +152,9 @@ const userService = {
     if (!user) {
       return next(notFoundResponse("Account not found"));
     }
-    // generate reset code
+    //generate reset code
     const resetCode = crypto.randomInt(100000, 999999).toString();
-    const resetCodeExpiry = new Date(Date.now() + 900000); //15 minutes
+    const resetCodeExpiry = new Date(Date.now() + 900000); //15minutes
     user.passwordResetToken = resetCode;
     user.passwordResetTokenExpiry = resetCodeExpiry;
     await user.save();
@@ -182,7 +168,6 @@ const userService = {
     });
     return user;
   },
-  // generate new password
   resetPassword: async (userData, next) => {
     const { email, password, confirmPassword, passwordResetToken } = userData;
     if (password !== confirmPassword) {
@@ -229,6 +214,33 @@ const userService = {
       path: "/api/v1/auth/refresh-token",
     });
     return true;
+  },
+  uploadAvatar: async (userId, avatar, next) => {
+    const user = await User.findById(userId);
+    if (!user) {
+      return next(notFoundResponse("No user found with that email"));
+    }
+    if (!avatar) {
+      return next(errorResponse("No file uploaded", 400));
+    }
+    //check if user has avatar already
+    const currentAvatar = user.avatar;
+    const currentAvatarId = user.avatarId;
+    if (currentAvatar) {
+      //if avatar exists, delete and replace with new avatar
+      await deleteFromCloudinary(currentAvatarId);
+    }
+    const { url, public_id } = await uploadToCloudinary(avatar, {
+      folder: "Clinicare/avatars",
+      width: 200,
+      height: 200,
+      crop: "fit",
+      format: "webp",
+    });
+    user.avatar = url || user.avatar;
+    user.avatarId = public_id || user.avatarId;
+    await user.save();
+    return user;
   },
 };
 

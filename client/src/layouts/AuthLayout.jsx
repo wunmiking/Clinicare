@@ -3,14 +3,14 @@ import { RiCopyrightFill } from "@remixicon/react";
 import { Outlet } from "react-router";
 
 export default function AuthLayout() {
-    return (
-        <div className="relative min-h-screen bg-[#F1F5F9]">
-      <div className="fixed  top-0 left-0 right-0 z-50 py-4 px-4 flex justify-between items-center">
-        <Logo />
+  return (
+    <div className="min-h-screen bg-slate-100 p-4">
+      <Logo />
+      <div className="flex items-center justify-center min-h-[calc(100vh-6rem)] gap-2">
+        <Outlet />
       </div>
-      <Outlet />
-      <div className=" py-5 px-4">
-        <div className="flex justify-center gap-1 md:justify-start">
+      <div className="flex justify-center md:justify-start items-center text-gray-600">
+        <div className="flex gap-1 items-center">
           <RiCopyrightFill size={18} />
           <span className="text-sm">
             {new Date().getFullYear()} Clinicare. All rights reserved.
@@ -18,6 +18,5 @@ export default function AuthLayout() {
         </div>
       </div>
     </div>
-
-    )
+  );
 }

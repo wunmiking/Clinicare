@@ -1,22 +1,22 @@
 import express from "express";
 import {
-  authenticateUser,
-  login,
   register,
-  // logoutUser,
+  login,
+  authenticateUser,
   refreshAccessToken,
   verifyUserAccount,
   resendVerificationToken,
   forgotPassword,
   resetPassword,
   logout,
+  uploadAvatar,
 } from "../controllers/userController.js";
 import { validateFormData } from "../middlewares/validateForm.js";
 import {
-  validateSignInSchema,
   validateSignUpSchema,
+  validateSignInSchema,
   validateAccountSchema,
-  validateForgotPasswordSchema,
+  forgotPasswordSchema,
   validateResetPasswordSchema,
 } from "../utils/dataSchema.js";
 import { verifyAuth } from "../middlewares/authenticate.js";
@@ -25,7 +25,7 @@ import { cacheMiddleware, clearCache } from "../middlewares/cache.js";
 
 const router = express.Router();
 
-router.post("/create", validateFormData(validateSignUpSchema), register); //you cannot get to register without first going through the validateFormData
+router.post("/create", validateFormData(validateSignUpSchema), register);
 router.post(
   "/login",
   rateLimiter,
@@ -41,7 +41,7 @@ router.get(
 );
 
 // router.post("/logout", verifyAuth, clearCache("auth_user"), logoutUser);
-router.post("/refresh-token", refreshTokenLimit, refreshAccessToken);
+router.post("/refresh-token", refreshAccessToken);
 
 router.patch(
   "/verify-account",
@@ -62,7 +62,7 @@ router.post(
 router.post(
   "/forgot-password",
   rateLimiter,
-  validateFormData(validateForgotPasswordSchema),
+  validateFormData(forgotPasswordSchema),
   forgotPassword
 );
 
@@ -73,6 +73,12 @@ router.patch(
   resetPassword
 );
 
-router.post("/logout", verifyAuth, clearCache("auth_user"), logout); //this clears the cache for the single uer. to clear all the cache we remover verifyAuth and write clearCache(null, clearAll: true)
+router.post("/logout", verifyAuth, clearCache("auth_user"), logout);
+router.patch(
+  "/upload-avatar",
+  verifyAuth,
+  clearCache("auth_user"),
+  uploadAvatar
+);
 
 export default router;

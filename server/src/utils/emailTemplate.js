@@ -2,7 +2,7 @@ export const welcomeUserTemplate = (
   name,
   verificationCode,
   password
-) => `<!DOCTYPE html>
+) => `  <!DOCTYPE html>
   <html>
   <head>
       <style>
@@ -37,10 +37,7 @@ export const welcomeUserTemplate = (
               <p>Thank you for registering with us. To get started, please verify your account with the code below.</p>
               ${
                 password
-                  ? `<p style="font-weight: bold; font-size: 20px; color:rgb(21, 66, 119)">
-                    Your password is ${password}. Please update your password in
-                    the settings as soon as possible.
-                  </p>`
+                  ? `<p style="font-weight: bold; font-size: 20px; color:rgb(21, 66, 119);">Your password is ${password}. Please update your password in the settings as soon as possible.</p>`
                   : ""
               }
               <p style="font-weight: bold; font-size: 20px; color:rgb(21, 66, 119);">${verificationCode}</p>
@@ -100,7 +97,7 @@ export const resendVerificationTemplate = (name, verificationCode) => `
   </html>
   `;
 
-  export const passwordResetTemplate = (name, email, resetToken) => `
+export const passwordResetTemplate = (name, email, resetToken) => `
   <!DOCTYPE html>
   <html>
   <head>

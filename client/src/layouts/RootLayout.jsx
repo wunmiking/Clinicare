@@ -1,48 +1,41 @@
-import React from 'react'
-import { Outlet, Link } from 'react-router'
-import Logo from '@/components/Logo'
-
-const publicNav = [
-  { name: 'Home', path: '/' },
-  { name: 'Contact Us', path: '/contact-us' },
-  { name: 'Login', path: '/account/login' },
-  { name: 'Sign Up', path: '/account/signup' },
-]
+import Logo from "@/components/Logo";
+import { RiCopyrightFill } from "@remixicon/react";
+import { NavLink, Outlet } from "react-router";
 
 export default function RootLayout() {
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* header */}
-      <header className="bg-white shadow-md">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <Link to="/">
-            <Logo className="h-8" />
-          </Link>
-          <nav className="space-x-6">
-            {publicNav.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
-                className="text-zinc-700 hover:text-blue-600 transition-colors"
+    <>
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white">
+        <div className="container mx-auto py-5 px-4 flex justify-between items-center">
+          <Logo />
+          <div className="flex gap-4 items-center">
+            {["contact"].map((item) => (
+              <NavLink
+                to={`/${item}`}
+                key={item}
+                className={({ isActive }) =>
+                  `hover:text-blue-500 transition-all duration-300 capitalize font-medium ${
+                    isActive ? "text-blue-500" : ""
+                  }`
+                }
               >
-                {link.name}
-              </Link>
+                {item.concat(" ", "Us")}
+              </NavLink>
             ))}
-          </nav>
+          </div>
         </div>
-      </header>
-
-      {/* page content */}
-      <main className="flex-1">
-        <Outlet />
-      </main>
-
-      {/* footer */}
-      <footer className="bg-gray-50">
-        <div className="container mx-auto px-4 py-6 text-center text-sm text-gray-600">
-          &copy; {new Date().getFullYear()} Clinicare. All rights reserved.
+      </div>
+      <Outlet />
+      <div className="container mx-auto py-5 px-4">
+        {/* hr line css - divider */}
+        <div className="divider"></div>
+        <div className="flex gap-1 items-center">
+          <RiCopyrightFill size={18} />
+          <span className="text-sm">
+            {new Date().getFullYear()} Clinicare. All rights reserved.
+          </span>
         </div>
-      </footer>
-    </div>
-  )
+      </div>
+    </>
+  );
 }

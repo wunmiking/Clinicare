@@ -1,33 +1,20 @@
-import MobileNav from "@/components/MobileNav";
-import Navbar from "@/components/Navbar";
+import DashboardNav from "@/components/DashboardNav";
 import Sidebar from "@/components/Sidebar";
-import { useAuth } from "@/contextStore";
+import { useAuth } from "@/store";
 import { Outlet } from "react-router";
 
 export default function DashboardLayout() {
-
-  const {user} = useAuth(); 
-
+  const { user } = useAuth();
   return (
-    <div className="min-h[100dvh] flex  bg-slate-100">
-      <div className="hidden lg:block">
+    <>
+      <section className="min-h-screen bg-slate-100">
         <Sidebar />
-      </div>
-      
-
-      <div className="ml-[200px] flex-1">
-       <div className="hidden lg:block">
-        <Navbar user={user} />
-       </div>
-        <div className="lg:hidden">
-          <MobileNav user={user} />
-          </div>        
-      
-
-       <main className="p-4">
+        <div className="lg:ml-[200px] flex-1">
+          <DashboardNav user={user} />
+          {/* <MobileNav /> */}
           <Outlet />
-        </main>
         </div>
-    </div>
+      </section>
+    </>
   );
 }

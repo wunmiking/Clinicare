@@ -7,7 +7,6 @@ import { sendEmail } from "../utils/mail.js";
 
 const mailService = {
   sendWelcomeMail: async (user) => {
-    // proceed to sending an email to the user
     const htmlBody = welcomeUserTemplate(user.fullname, user.verificationToken);
     await sendEmail({
       to: user.email,

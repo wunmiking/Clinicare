@@ -1,4 +1,3 @@
-
 import { RiErrorWarningLine } from "@remixicon/react";
 
 export default function ErrorAlert({ error }) {

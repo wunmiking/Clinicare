@@ -1,11 +1,4 @@
-import mongoose, { model, Schema } from "mongoose";
-// import { date } from "zod";
-
-// We use role as discriminator key to determine the user. Timestamps are also turned on for createdAt & updatedAt
-const baseOptions = {
-  discriminatorKey: "role",
-  timestamps: true,
-};
+import mongoose, { Schema, model } from "mongoose";
 
 const userSchema = new Schema(
   {
@@ -25,27 +18,25 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: [true, "Password is required"],
-      select: false, //this will make sure password is not shown to the user when you console.log or when client inspects in the browser
+      select: false, //prevent password field from being sent to client
     },
     dateOfBirth: {
       type: Date,
     },
     phone: {
       type: String,
-      maxlength: [15, "Phone number must not exceed 15 digits"],
+      maxlength: [14, "Phone number must not exceed 11 digits"],
     },
     avatar: {
-      //this will be passed to cloudinary to turn the image to a link
       type: String,
       default: "",
     },
     avatarId: {
-      //to track the avatar ID attached to the url to be able to find the image in cloudinary for deleting or modifying
-      type: String,
+      type: String, //field is to track the id attached to our avatar url from cloudinary
     },
     role: {
       type: String,
-      enum: ["patient", "doctor", "nurse", "staff", "admin"], //specifies predifined options that must be selected
+      enum: ["patient", "doctor", "nurse", "staff", "admin"], //predefined options that must be selected
       default: "patient",
     },
     isVerified: {
@@ -73,37 +64,13 @@ const userSchema = new Schema(
       default: false,
       select: function () {
         return this.role === "patient";
-      }, //show this field only if this user role is "patient"
+      }, //show field only if the user role is "patient"
     },
   },
-  baseOptions
+  {
+    timestamps: true, //includes a createdAt and updatedAt when a doc is created
+  }
 );
 
-//this checks if a model named User already exists to prevent subsequent re-run of checks. If it doesn't exist then it creates it. It is useful when compiling your schema as changes are made
-const User = mongoose.models.User || model("User", userSchema);
-
-// const doctorSchema = new Schema(
-//   {
-//     specialty: {
-//       type: String,
-//       required: true,
-//       trim: true,
-//     },
-
-//     availableDate: {
-//       type: String,
-//       required: true,
-//     },
-
-//     availableSlots: {
-//       type: String,
-//       required: true,
-//     },
-//   },
-//   baseOptions
-// );
-
-// // register the Doctor discriminator
-// const Doctor = User.discriminator("doctor", doctorSchema);
-
-export default User 
+const User = mongoose.models.User || model("User", userSchema); //this checks if a model named User already exists to prevent subsequent checks. if it does not exist then it creates it. it is useful when compiling your schema as you make changes
+export default User;

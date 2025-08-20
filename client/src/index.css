@@ -1,4 +1,4 @@
-@import url('https://fonts.cdnfonts.com/css/br-shape');
+@import url("https://fonts.cdnfonts.com/css/br-shape");
 @import "tailwindcss";
 @plugin "daisyui" {
   themes: light --default;
@@ -27,7 +27,6 @@ body {
 ::view-transition-old(root) {
   animation: fade-out 300ms ease-in forwards;
 }
-
 ::view-transition-new(root) {
   animation: fade-in 500ms ease-in forwards;
 }
@@ -40,7 +39,6 @@ body {
     opacity: 1;
   }
 }
-
 @keyframes fade-out {
   from {
     opacity: 1;
