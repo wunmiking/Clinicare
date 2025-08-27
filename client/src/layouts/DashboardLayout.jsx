@@ -8,7 +8,7 @@ export default function DashboardLayout() {
   return (
     <>
       <section className="min-h-screen bg-slate-100">
-        <Sidebar />
+        <Sidebar user={user}/>
         <div className="lg:ml-[200px] flex-1">
           <DashboardNav user={user} />
           {/* <MobileNav /> */}

@@ -12,7 +12,7 @@ export function PublicRoutes({ children, accessToken }) {
         replace: true,
       });
     }
-  }, [accessToken, from, location, navigate]);
+  }, [accessToken, from, location, navigate,]);
   return children;
 }
 
@@ -28,6 +28,10 @@ export function PrivateRoutes({ children, accessToken, user }) {
         replace: true,
       });
     }
+     if (user && !user.isVerified && location.pathname !== "/verify-account") {
+      navigate("/verify-account");
+    }
+    
     if (
       user &&
       user.isVerified &&

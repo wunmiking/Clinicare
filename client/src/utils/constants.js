@@ -232,3 +232,74 @@ export const settingsLink = [
     name: "Health Record",
   },
 ];
+
+
+export const usersRoleColors = {
+  admin: "bg-blue-200 text-blue-700",
+  doctor: "bg-green-200 text-green-700",
+  nurse: "bg-yellow-200 text-yellow-700",
+  staff: "bg-teal-200 text-teal-700",
+  patient: "bg-red-200 text-red-700",
+};
+
+export const roleBasedPathPermissions = {
+  admin: {
+    allowedSubpaths: [
+      "/dashboard",
+      "/dashboard/appointments",
+      "/dashboard/rooms",
+      "/dashboard/payments",
+      "/dashboard/doctors",
+      "/dashboard/patients",
+      "/dashboard/inpatients",
+      "/dashboard/users",
+      "/dashboard/settings",
+      "/dashboard/settings/account",
+      "/dashboard/settings/password",
+    ],
+  },
+  doctor: {
+    allowedSubpaths: [
+      "/dashboard",
+      "/dashboard/appointments",
+      "/dashboard/rooms",
+      "/dashboard/doctors",
+      "/dashboard/patients",
+      "/dashboard/inpatients",
+      "/dashboard/settings",
+      "/dashboard/settings/account",
+      "/dashboard/settings/password",
+    ],
+  },
+  patient: {
+    allowedSubpaths: [
+      "/dashboard",
+      "/dashboard/patient-appointments",
+      "/dashboard/patient-payments",
+      "/dashboard/settings",
+      "/dashboard/settings/account",
+      "/dashboard/settings/password",
+      "/dashboard/settings/health",
+    ],
+  },
+  nurse: {
+    allowedSubpaths: [
+      "/dashboard",
+      "/dashboard/appointments",
+      "/dashboard/rooms",
+      "/dashboard/settings",
+      "/dashboard/settings/account",
+      "/dashboard/settings/password",
+    ],
+  },
+  staff: {
+    allowedSubpaths: [
+      "/dashboard",
+      "/dashboard/appointments",
+      "/dashboard/rooms",
+      "/dashboard/settings",
+      "/dashboard/settings/account",
+      "/dashboard/settings/password",
+    ],
+  },
+};

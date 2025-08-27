@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { RiUser4Fill } from "@remixicon/react";
 import { useForm } from "react-hook-form";
 import { validateSignInSchema } from "@/utils/dataSchema";
@@ -10,7 +10,6 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import ErrorAlert from "@/components/ErrorAlert";
 import { useAuth } from "@/store";
-
 
 export default function SignIn() {
   useMetaArgs({
@@ -27,35 +26,37 @@ export default function SignIn() {
     setIsVisible((prev) => !prev);
   };
 
-  const { setAccessToken } = useAuth();
-  
+  const { setAccessToken, user } = useAuth();
+  const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm({ resolver: zodResolver(validateSignInSchema) });
 
-    // const queryClient = useQueryClient(); //initializing query client  from tanstack
-    //mutation are for create, update or delete actions
-    const mutation = useMutation({
-      mutationFn: loginUser,
-      onSuccess: (response) => {
-        // what yo want to do if api call is a success
-        // console.log(response);
-        toast.success(response?.data?.message || "Login successful");
-        setAccessToken(response?.data?.setAccessToken);
-  
-        //save accessToken
-      },
-      onError: (error) => {
-        console.log(error);
-        setError(error?.response?.data?.message || "Login failed");
-      },
-    });
-    const onSubmit = async (data) => {
-      mutation.mutate(data); //submitting our form to our mutatation function to help us make api call using our registerUser api
-    };
+  // const queryClient = useQueryClient(); //initializing query client  from tanstack
+  //mutation are for create, update or delete actions
+  const mutation = useMutation({
+    mutationFn: loginUser,
+    onSuccess: (response) => {
+      // what yo want to do if api call is a success
+      // console.log(response);
+      toast.success(response?.data?.message || "Login successful");
+      setAccessToken(response?.data?.data?.accessToken);
+      if (!user?.isVerified) {
+        navigate("/verify-account");
+      }
+    },
+    //save accessToken
+    onError: (error) => {
+      console.log(error);
+      setError(error?.response?.data?.message || "Login failed");
+    },
+  });
+  const onSubmit = async (data) => {
+    mutation.mutate(data); //submitting our form to our mutatation function to help us make api call using our registerUser api
+  };
 
   return (
     <div className="min-h-[calc(100vh-4rem)] container mx-auto flex justify-center pt-20 items-center">
@@ -121,10 +122,10 @@ export default function SignIn() {
           <div>
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={mutation.isPending}
               className="bg-blue-500 hover:bg-blue-600 w-full py-2 text-white text-[14px] font-bold rounded-sm my-4"
             >
-              {isSubmitting ? "Signing In..." : "Sign In"}
+              {mutation.isPending ? "Signing In..." : "Sign In"}
             </button>
           </div>
           <p className="text-center text-[13px] text-zinc-600 pt-2 md:pt-0">

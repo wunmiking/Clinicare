@@ -3,7 +3,7 @@ import { bloodGroup, formatDate } from "@/utils/constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { validatePatientSchema } from "../../utils/dataSchema";
-import { useAuth } from "@/contextStore";
+import { useAuth } from "@/store";
 import { useEffect, useMemo, useState } from "react";
 import { registerPatient } from "@/api/patients";
 import { toast } from "sonner";
@@ -28,7 +28,7 @@ export default function PatientOnboard() {
 
   const { user, accessToken } = useAuth();
   const [currentStep, setCurrentstep] = useState(
-    user?.iscompletedOnboard ? 3 : 2
+    user?.isCompletedOnboard ? 3 : 1
   );
   const [field, setField] = useState(false);
   const [error, setError] = useState(null);
@@ -104,8 +104,8 @@ export default function PatientOnboard() {
     },
   });
 
-  const onSubmit = async (FormData) => {
-    mutation.mutate({ FormData, accessToken });
+  const onSubmit = async (formData) => {
+    mutation.mutate({ formData, accessToken });
   };
 
   return (
@@ -385,9 +385,9 @@ export default function PatientOnboard() {
                   <button
                     className="btn bg-blue-500  hover:bg-blue-600 text-white font-bold w-full md:w-35 rounded-lg"
                     type="submit"
-                    disabled={isSubmitting || mutation.isPending || field}
+                    disabled={mutation.isPending}
                   >
-                    {isSubmitting || mutation.isPending ? "Saving..." : "Save"}
+                    {mutation.isPending ? "Saving..." : "Save"}
                   </button>
                 </div>
               )}

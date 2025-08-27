@@ -3,6 +3,8 @@ import useMetaArgs from "@/hooks/useMeta";
 import { useNavigate, NavLink, Outlet, useLocation } from "react-router";
 import { settingsLink } from "@/utils/constants";
 import { useEffect } from "react";
+import { useAuth } from "@/store";
+
 
 export default function Settings() {
   useMetaArgs({
@@ -12,12 +14,15 @@ export default function Settings() {
   });
   const navigate = useNavigate();
   const location = useLocation();
+  const {user} = useAuth();
 
   //redirecting to account settings page
   useEffect(() => {
     location.pathname === "/dashboard/settings" &&
       navigate("/dashboard/settings/account");
   }, [location.pathname, navigate]);
+
+  const isPatient = user?.role === "patient";
 
   return (
     <PageWrapper>
@@ -37,6 +42,7 @@ export default function Settings() {
           <button
             type="submit"
             className="bg-blue-500 text-white font-bold border border-gray-300 p-2 rounded-md cursor-pointer w-[140px]"
+            form={location.pathname}
           >
             Save
           </button>
@@ -45,7 +51,13 @@ export default function Settings() {
       <div className="my-4 bg-white rounded-xl border border-slate-200 md:grid grid-cols-12">
         <div className="col-span-2 border-r p-4 border-slate-200">
           <div className="flex flex-col">
-            {settingsLink.map((child) => (
+            {settingsLink.filter((child) => {
+              if (child.href === "dashboard/settings/health") {
+                return isPatient;
+              }
+              return true;
+            })
+            .map((child) => (
               <NavLink
                 to={child.href}
                 key={child.id}

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { RiUser4Fill } from "@remixicon/react";
 import { useForm } from "react-hook-form";
 import { validateSignUpSchema } from "@/utils/dataSchema";
@@ -9,7 +9,7 @@ import { registerUser } from "@/api/auth";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import ErrorAlert from "@/components/ErrorAlert";
-import { useAuth } from "@/contextStore";
+import { useAuth } from "@/store";
 
 export default function SignUp() {
   useMetaArgs({
@@ -25,7 +25,8 @@ export default function SignUp() {
   const togglePassword = () => {
     setIsVisible((prev) => !prev);
   };
-  const { setAccessToken } = useAuth();
+  const { setAccessToken, user } = useAuth();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -40,10 +41,13 @@ export default function SignUp() {
       // what yo want to do if api call is a success
       // console.log(response);
       toast.success(response?.data?.message || "Registration successful");
-      setAccessToken(response?.data?.setAccessToken);
-
+      setAccessToken(response?.data?.data?.accessToken);
+      if (!user?.isVerified) {
+        navigate("/verify-account");
+      }
       //save accessToken
     },
+    
     onError: (error) => {
       console.log(error);
       setError(error?.response?.data?.message || "Registration failed");

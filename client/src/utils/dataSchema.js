@@ -112,3 +112,91 @@ export const validateResetPasswordSchema = z.object({
       message: "Password must contain at least one special character",
     }),
 });
+
+
+export const validateUserSchema = z.object({
+  fullname: z.string().min(3, {
+    message: "Full name must be at least 3 characters long",
+  }),
+  email: z.string().email(),
+  phone: z.string().min(10, {
+    message: "Phone number must be at least 10 characters long",
+  }),
+  dateOfBirth: z.string().date(),
+});
+
+export const updatePasswordSchema = z.object({
+  password: z
+    .string()
+    .min(8, {
+      message: "Password must be at least 8 characters long",
+    })
+    .regex(/[A-Z]/, {
+      message: "Password must contain at least one uppercase letter",
+    })
+    .regex(/[a-z]/, {
+      message: "Password must contain at least one lowercase letter",
+    })
+    .regex(/[!@#$%^&*(),.?":{}|<>]/, {
+      message: "Password must contain at least one special character",
+    }),
+  newPassword: z
+    .string()
+    .min(8, {
+      message: "New Password must be at least 8 characters long",
+    })
+    .regex(/[A-Z]/, {
+      message: "New Password must contain at least one uppercase letter",
+    })
+    .regex(/[a-z]/, {
+      message: "New Password must contain at least one lowercase letter",
+    })
+    .regex(/[!@#$%^&*(),.?":{}|<>]/, {
+      message: "New Password must contain at least one special character",
+    }),
+  confirmPassword: z
+    .string()
+    .min(8, {
+      message: "Confirm Password must be at least 8 characters long",
+    })
+    .regex(/[A-Z]/, {
+      message: "Confirm Password must contain at least one uppercase letter",
+    })
+    .regex(/[a-z]/, {
+      message: "Confirm Password must contain at least one lowercase letter",
+    })
+    .regex(/[!@#$%^&*(),.?":{}|<>]/, {
+      message: "Confirm Password must contain at least one special character",
+    }),
+});
+
+export const validateUpdateUserRoleSchema = z.object({
+  role: z
+    .enum(["staff", "doctor", "admin", "nurse", "patient"])
+    .refine((value) => value !== "", {
+      message: "Role is required",
+    }),
+});
+
+
+
+// my own code below, to be replaced on receiving the real dataSchema
+
+export const updateHealthRecordSchema = z.object({
+  allergies: z
+    .string()
+    .max(255, "Allergies must be 255 characters or less")
+    .optional()
+    .or(z.literal("")),
+  bloodGroup: z
+    .string()
+    .max(5, "Blood group must be 5 characters or less")
+    .regex(/^(A|B|AB|O)[+-]?$/, "Invalid blood group")
+    .optional()
+    .or(z.literal("")),
+  medicalConditions: z
+    .string()
+    .max(255, "Medical conditions must be 255 characters or less")
+    .optional()
+    .or(z.literal("")),
+});
