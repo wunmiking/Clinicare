@@ -1,17 +1,18 @@
 import { getAllPatients } from '@/api/patients'
 import ErrorAlert from '@/components/ErrorAlert'
-import { SkeletonCard } from '@/components/LazyLoader'
+import { SkeletonTable } from '@/components/LazyLoader'
 import PageWrapper from '@/components/PageWrapper'
 import Paginate from '@/components/Paginate'
 import Search from '@/components/Search'
 // import AddNewPatient from '@/features/patients/AddNewPatient'
 import Filter from '@/features/patients/Filter'
-import UsersCard from '@/features/users/UsersCard'
+// import UsersCard from '@/features/users/UsersCard'
 import usePaginate from '@/hooks/usePaginate'
 import { useAuth } from '@/store'
 import { useQuery } from '@tanstack/react-query'
-import React from 'react'
+import React, { lazy, Suspense } from 'react'
 import { useSearchParams } from 'react-router'
+const Table = lazy (() => import ('@/features/patients/Table'));
 
 
 export default function Patients() {
@@ -28,7 +29,7 @@ const {isPending, isError, data, error} = useQuery({
   queryFn: () => getAllPatients(searchParams, accessToken),
 });
 
-console.log(data);
+// console.log(data);
 
 const { handlePageChange, totalPages, hasMore, currentPage } = usePaginate({
     totalPages: data?.data?.data?.meta?.totalPages || 1,
@@ -36,8 +37,10 @@ const { handlePageChange, totalPages, hasMore, currentPage } = usePaginate({
     currentPage: data?.data?.data?.meta?.currentPage || 1,
   });
 
-const users = data?.data?.data?.users || [];
-const patients = users.filter((user) => user.role === "patient");
+const patients = data?.data?.data?.patients || [];
+// const patients = users.filter((user) => user.role === "patient");
+console.log(patients);
+
 
    return (
     <PageWrapper>
@@ -58,30 +61,30 @@ const patients = users.filter((user) => user.role === "patient");
       <div className="flex items-center md:justify-end mt-5">
 
       </div>
-      {isPending && <SkeletonCard/>}
-{isError && <ErrorAlert error={error?.response?.data?.message} />}
+      {isPending ? <SkeletonTable/> : <>
+{isError ? <ErrorAlert error={error?.response?.data?.message} /> : <> 
       {patients?.length > 0 ? (
         <>
-          {/* <div className="mt-5 grid gap-3 grid-cols-12">
-            {patients.map((item) => (
-              <div
-                key={item.id}
-                className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3"
-              >
-                <UsersCard item={item} />
-              </div>
-            ))}
-          </div> */}
+        <Suspense fallback = {<SkeletonTable/>}>
+          <Table patients={patients}/>
+        </Suspense> 
+
           <Paginate
             totalPages={totalPages}
             hasMore={hasMore}
             handlePageChange={handlePageChange}
             currentPage={currentPage}
           />
+
+
         </>
       ) : (
         <p className="mt-6 font-semibold text-center"> No patient found </p>
       )}
+      </>
+}
+</>}
+
     </PageWrapper>
   );
 

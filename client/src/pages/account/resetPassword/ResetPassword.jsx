@@ -13,7 +13,7 @@ import { toast } from "sonner";
 export default function ResetPassword() {
   useMetaArgs({
     title: "Reset Password - Clinicare",
-    description: "Reet Your Clinicare account password",
+    description: "Reset Your Clinicare account password",
     keywords: "Clinicare, reset-password-account, acc-reset, account",
   });
 

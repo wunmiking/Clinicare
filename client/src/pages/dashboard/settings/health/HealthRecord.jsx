@@ -12,11 +12,6 @@ import { bloodGroup, formatDate } from "@/utils/constants";
 import { LazyLoader } from "@/components/LazyLoader";
 import { getPatient, updatePatient } from "@/api/patients";
 
-const gender = ["male", "female", "other"];
-const bloodGroupOptions = Object.entries(bloodGroup).map(([key, value]) => ({
-  name: key,
-  id: value,
-}));
 
 export default function HealthRecord() {
   useMetaArgs({
@@ -34,6 +29,7 @@ export default function HealthRecord() {
   });
 
   const patientData = data?.data?.data;
+  
   useEffect(() => {
     if (user) {
       setValue("fullname", user.fullname);
@@ -80,6 +76,12 @@ export default function HealthRecord() {
     },
   });
 
+  const gender = ["male", "female", "other"];
+const bloodGroupOptions = Object.entries(bloodGroup).map(([key, value]) => ({
+  name: key,
+  id: value,
+})); 
+
   const onSubmit = async (formData) => {
     mutation.mutate({ patientId: patientData._id, formData, accessToken });
   };
@@ -89,14 +91,14 @@ export default function HealthRecord() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] container mx-auto flex justify-center pt-20 items-center">
+    <div className="min-h-[calc(100vh-4rem)] container mx-auto flex justify-center  pt-0 items-center">
       <div className="px-4 md:px-0 w-full">
-        <h1 className="font-bold text-xl text-center py-2">
-          Health Information
+        <h1 className="font-bold text-2xl pb-2 border-b border-gray-300">
+          Health Record
         </h1>
         <div className="max-w-[600px] mx-auto">
           <form
-            className="bg-white px-5 py-4 flex flex-col justify-center rounded-xl shadow-sm"
+            className="bg-white px-5 py-3 md:flex flex-col justify-center rounded-xl shadow-sm items-center"
             onSubmit={handleSubmit(onSubmit)}
             id="/dashboard/settings/health"
           >
@@ -104,17 +106,16 @@ export default function HealthRecord() {
               (err && (
                 <ErrorAlert error={error?.response?.data?.message || err} />
               ))}
-            <p className="text-center text-[14px] md:text-[15px] pb-4 text-zinc-600 ">
-              Update your health record information below.
-            </p>
-            {error && <ErrorAlert error={error} />}
+
+            {/* {error && <ErrorAlert error={error} />} */}
             <div className="grid grid-cols-12 gap-3">
               <div className="col-span-12 md:col-span-6">
                 <fieldset className="fieldset">
                   <legend className="fieldset-legend">Full name</legend>
                   <input
                     type="text"
-                    className="input"
+                    id="fullname"
+                    className="input w-full"
                     placeholder="Full name"
                     {...register("fullname")}
                   />
@@ -130,7 +131,8 @@ export default function HealthRecord() {
                   <legend className="fieldset-legend">Email</legend>
                   <input
                     type="email"
-                    className="input"
+                    id="email"
+                    className="input w-full"
                     placeholder="Email"
                     {...register("email")}
                   />
@@ -146,7 +148,8 @@ export default function HealthRecord() {
                   <legend className="fieldset-legend">Phone</legend>
                   <input
                     type="tel"
-                    className="input"
+                    id="phone"
+                    className="input w-full"
                     placeholder="Phone"
                     {...register("phone")}
                   />
@@ -162,7 +165,8 @@ export default function HealthRecord() {
                   <legend className="fieldset-legend">Date of birth</legend>
                   <input
                     type="date"
-                    className="input"
+                    id="dateOfBirth"
+                    className="input w-full"
                     placeholder="dd/mm/yyyy"
                     {...register("dateOfBirth")}
                   />
@@ -177,7 +181,8 @@ export default function HealthRecord() {
                 <fieldset className="fieldset">
                   <legend className="fieldset-legend">Gender</legend>
                   <select
-                    className="select capitalize w-full"
+                  id="gender"
+                    className="select capitalize cursor-pointer w-full"
                     {...register("gender")}
                     disabled={isSubmitting}
                   >
@@ -199,6 +204,7 @@ export default function HealthRecord() {
                 <fieldset className="fieldset">
                   <legend className="fieldset-legend">Blood group</legend>
                   <select
+                  id="bloodGroup"
                     {...register("bloodGroup")}
                     className="select capitalize w-full"
                   >
@@ -221,6 +227,7 @@ export default function HealthRecord() {
                   <legend className="fieldset-legend">Address</legend>
                   <input
                     type="text"
+                    id="address"
                     className="input w-full"
                     placeholder="Address"
                     {...register("address")}
@@ -237,7 +244,8 @@ export default function HealthRecord() {
                   <legend className="fieldset-legend">Emergency contact</legend>
                   <input
                     type="text"
-                    className="input text-xs"
+                    id="emergencyContact"
+                    className="input text-xs w-full"
                     placeholder="Emergency contact"
                     {...register("emergencyContact")}
                   />
@@ -255,7 +263,8 @@ export default function HealthRecord() {
                   </legend>
                   <input
                     type="text"
-                    className="input text-xs"
+                    id="emergencyContactPhone"
+                    className="input text-xs w-full"
                     placeholder="Emergency contact phone"
                     {...register("emergencyContactPhone")}
                   />
@@ -273,7 +282,7 @@ export default function HealthRecord() {
                   </legend>
                   <input
                     type="text"
-                    className="input text-xs"
+                    className="input text-xs w-full"
                     placeholder="Emergency contact relationship"
                     {...register("emergencyContactRelationship")}
                   />

@@ -3,6 +3,7 @@ import { lazy, Suspense } from "react";
 import { LazyLoader } from "@/components/LazyLoader";
 import { PublicRoutes, PrivateRoutes, VerifiedRoutes } from "./ProtectedRoutes";
 import { useAuth } from "@/store";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 //render pages
 const RootLayout = lazy(() => import("@/layouts/RootLayout"));
@@ -14,21 +15,43 @@ const Contact = lazy(() => import("@/pages/contact/Contact"));
 const Signin = lazy(() => import("@/pages/account/signin/SignIn"));
 const Signup = lazy(() => import("@/pages/account/signup/SignUp"));
 const VerifyAccount = lazy(() => import("@/pages/verifyAccount/VerifyAccount"));
-const PatientOnboard = lazy(() => import("@/pages/patientsOnboard/PatientsOnboard"));
-const ForgotPassword = lazy(() => import("@/pages/account/forgotPassword/ForgotPassword"));
-const ResetPassword = lazy(() => import("@/pages/account/resetPassword/ResetPassword"));
-const Appointments = lazy (() => import("@/pages/dashboard/appointments/Appointments"));
-const Doctors = lazy (() => import("@/pages/dashboard/doctors/Doctors"));
+const PatientOnboard = lazy(() =>
+  import("@/pages/patientsOnboard/PatientsOnboard")
+);
+const ForgotPassword = lazy(() =>
+  import("@/pages/account/forgotPassword/ForgotPassword")
+);
+const ResetPassword = lazy(() =>
+  import("@/pages/account/resetPassword/ResetPassword")
+);
+const Appointments = lazy(() =>
+  import("@/pages/dashboard/appointments/Appointments")
+);
+const Doctors = lazy(() => import("@/pages/dashboard/doctors/Doctors"));
 const Patients = lazy(() => import("@/pages/dashboard/patients/Patients"));
-const Inpatients = lazy (() => import("@/pages/dashboard/inpatients/Inpatients"));
-const Payments = lazy (() => import ("@/pages/dashboard/payments/Payments"));
-const Rooms = lazy (() => import ("@/pages/dashboard/rooms/Rooms"));
-const Users = lazy (() => import("@/pages/dashboard/users/Users"));
+const Inpatients = lazy(() =>
+  import("@/pages/dashboard/inpatients/Inpatients")
+);
+const Payments = lazy(() => import("@/pages/dashboard/payments/Payments"));
+const Rooms = lazy(() => import("@/pages/dashboard/rooms/Rooms"));
+const Users = lazy(() => import("@/pages/dashboard/users/Users"));
 const Settings = lazy(() => import("@/pages/dashboard/settings/Settings"));
-const Account = lazy(() => import("@/pages/dashboard/settings/account/Account"));
-const Password = lazy (() => import("@/pages/dashboard/settings/password/Password"));
-const Health = lazy (() => import("@/pages/dashboard/settings/health-record/HealthRecord"))
-const Dashboard = lazy (() => import("@/pages/dashboard/Dashboard"));
+const Account = lazy(() =>
+  import("@/pages/dashboard/settings/account/Account")
+);
+const Password = lazy(() =>
+  import("@/pages/dashboard/settings/password/Password")
+);
+const Health = lazy(() =>
+  import("@/pages/dashboard/settings/health/HealthRecord")
+);
+const Dashboard = lazy(() => import("@/pages/dashboard/Dashboard"));
+const PatientAppointments = lazy(() =>
+  import("@/pages/dashboard/appointments/PatientAppointments")
+);
+const PatientPayments = lazy(() =>
+  import("@/pages/dashboard/payments/PatientPayments")
+);
 
 
 export default function AppRoutes() {
@@ -42,6 +65,7 @@ export default function AppRoutes() {
           </PublicRoutes>
         </Suspense>
       ),
+      errorElement: <ErrorBoundary />,
       children: [
         {
           index: true,
@@ -70,6 +94,7 @@ export default function AppRoutes() {
           </PublicRoutes>
         </Suspense>
       ),
+      errorElement: <ErrorBoundary />,
       children: [
         {
           path: "signin",
@@ -113,6 +138,7 @@ export default function AppRoutes() {
           </VerifiedRoutes>
         </Suspense>
       ),
+      errorElement: <ErrorBoundary />,
       children: [
         {
           path: "verify-account",
@@ -137,10 +163,11 @@ export default function AppRoutes() {
       element: (
         <Suspense fallback={<LazyLoader />}>
           <PrivateRoutes accessToken={accessToken} user={user}>
-            <DashboardLayout />,
+            <DashboardLayout />
           </PrivateRoutes>
         </Suspense>
       ),
+      errorElement: <ErrorBoundary />,
       children: [
         {
           index: true,
@@ -151,13 +178,23 @@ export default function AppRoutes() {
           ),
         },
         {
-          path: "Appointments",
+          path: "appointments",
           element: (
             <Suspense fallback={<LazyLoader />}>
               <Appointments />
             </Suspense>
           ),
         },
+
+        {
+          path: "patient-appointments",
+          element: (
+            <Suspense fallback={<LazyLoader />}>
+              <PatientAppointments />
+            </Suspense>
+          ),
+        },
+
         {
           path: "doctors",
           element: (
@@ -175,7 +212,7 @@ export default function AppRoutes() {
           ),
         },
         {
-          path: "Inpatients",
+          path: "inpatients",
           element: (
             <Suspense fallback={<LazyLoader />}>
               <Inpatients />
@@ -190,6 +227,16 @@ export default function AppRoutes() {
             </Suspense>
           ),
         },
+        
+        {
+          path: "patient-payments",
+          element: (
+            <Suspense fallback={<LazyLoader />}>
+              <PatientPayments />
+            </Suspense>
+          ),
+        },
+
         {
           path: "rooms",
           element: (
@@ -202,7 +249,7 @@ export default function AppRoutes() {
           path: "users",
           element: (
             <Suspense fallback={<LazyLoader />}>
-              <Users/>
+              <Users />
             </Suspense>
           ),
         },
@@ -239,7 +286,7 @@ export default function AppRoutes() {
               ),
             },
 
-             {
+            {
               path: "users",
               element: (
                 <Suspense fallback={<LazyLoader />}>
@@ -249,7 +296,6 @@ export default function AppRoutes() {
             },
           ],
         },
-        
       ],
     },
   ];

@@ -55,8 +55,9 @@ export default function Users() {
       <div className="flex items-center md:justify-end mt-5">
 
       </div>
-      {isPending && <SkeletonCard/>}
-{isError && <ErrorAlert error={error?.response?.data?.message} />}
+      {isPending ? <SkeletonCard/> : <>
+{isError ? <ErrorAlert error={error?.response?.data?.message} /> : <>
+
       {users?.length > 0 ? (
         <>
         <Suspense fallback={<SkeletonCard />}>
@@ -81,6 +82,9 @@ export default function Users() {
       ) : (
         <p className="mt-6 font-semibold text-center"> No user found </p>
       )}
+      </>
+}
+</>}
     </PageWrapper>
   );
 }

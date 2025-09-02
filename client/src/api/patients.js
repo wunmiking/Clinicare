@@ -35,7 +35,7 @@ export const getAllPatients = async (searchParams, accessToken) => {
   if (query) params.append("query", query);
   params.append("role", "patient");
   return await axiosInstance.get(
-    `/auth/all?${params.toString()}`,
+    `/patients/all?${params.toString()}`,
     headers(accessToken)
   );
 };

@@ -1,3 +1,4 @@
+import { bloodGroup } from "@/utils/constants";
 import { RiFilterLine } from "@remixicon/react";
 import { useState } from "react";
 import { useSearchParams } from "react-router";
@@ -5,7 +6,8 @@ import { useSearchParams } from "react-router";
 export default function Filter() {
   const [openOptions, setOpenOptions] = useState(false);
   const [filters, setFilters] = useState({
-    role: "",
+    gender: "",
+    bloodGroup: "",
   });
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -32,10 +34,12 @@ export default function Filter() {
 
   const handleClearFilters = () => {
     setFilters({
-      role: "",
+      gender: "",
+      bloodGroup: "",
     });
     const params = new URLSearchParams(searchParams);
-    params.delete("role");
+    params.delete("gender");
+    params.delete("bloodGroup");
     setSearchParams(params);
     setOpenOptions(false);
   };
@@ -63,20 +67,34 @@ export default function Filter() {
             <form onSubmit={handleSubmit}>
               <div className="flex flex-col gap-2 space-y-4">
                 <select
-                  value={filters.role}
-                  onChange={(e) => handleFilterChange("role", e.target.value)}
+                  value={filters.gender}
+                  onChange={(e) => handleFilterChange("gender", e.target.value)}
                   className="select capitalize"
                 >
                   <option value="" disabled={true}>
-                    Select Role
+                    Select Gender
                   </option>
-                  {["admin", "doctor", "nurse", "staff", "patient"]?.map(
-                    (item, index) => (
-                      <option key={index} value={item}>
-                        {item}
-                      </option>
-                    )
-                  )}
+                  {["male", "female", "other"]?.map((item, index) => (
+                    <option key={index} value={item}>
+                      {item}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  value={filters.bloodGroup}
+                  onChange={(e) =>
+                    handleFilterChange("bloodGroup", e.target.value)
+                  }
+                  className="select capitalize"
+                >
+                  <option value="" disabled={true}>
+                    Select Blood Group
+                  </option>
+                  {Object.entries(bloodGroup)?.map((item, index) => (
+                    <option key={index} value={item[1]}>
+                      {item[0]}
+                    </option>
+                  ))}
                 </select>
                 <div className="flex justify-end gap-2">
                   <button

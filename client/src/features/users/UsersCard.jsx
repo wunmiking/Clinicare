@@ -58,6 +58,7 @@ export default function UsersCard({ item }) {
           <button
           className="btn btn-sm"
           onClick={() => setEditModalOpen(true)}
+          disabled={item?.role === "patient"}
         >
             Edit
           </button>

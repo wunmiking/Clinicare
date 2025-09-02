@@ -51,3 +51,64 @@ export function SkeletonCard() {
     </div>
   );
 }
+
+export function SkeletonTable() {
+  return (
+    <div className="overflow-x-auto">
+      <table className="table">
+        <thead>
+          <tr>
+            <th>
+              <div className="skeleton h-4 w-20"></div>
+            </th>
+            <th>
+              <div className="skeleton h-4 w-20"></div>
+            </th>
+            <th>
+              <div className="skeleton h-4 w-20"></div>
+            </th>
+            <th>
+              <div className="skeleton h-4 w-20"></div>
+            </th>
+            <th>
+              <div className="skeleton h-4 w-20"></div>
+            </th>
+            <th>
+              <div className="skeleton h-4 w-20"></div>
+            </th>
+            <th>
+              <div className="skeleton h-4 w-20"></div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {Array.from({ length: 4 }).map((_, index) => (
+            <tr key={index}>
+              <td>
+                <div className="skeleton h-4 w-20"></div>
+              </td>
+              <td>
+                <div className="skeleton h-4 w-20"></div>
+              </td>
+              <td>
+                <div className="skeleton h-4 w-20"></div>
+              </td>
+              <td>
+                <div className="skeleton h-4 w-20"></div>
+              </td>
+              <td>
+                <div className="skeleton h-4 w-20"></div>
+              </td>
+              <td>
+                <div className="skeleton h-4 w-20"></div>
+              </td>
+              <td>
+                <div className="skeleton h-4 w-20"></div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}

@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form";
 export default function UpdateUser({ isOpen, onClose, item }) {
   const [error, setError] = useState(null);
   const [success, showSuccess] = useState(false);
+  const [showDoctor, setShowDoctor] = useState(false);
   const [msg, setMsg] = useState("");
   const { accessToken } = useAuth();
   const queryClient = useQueryClient();
@@ -18,16 +19,37 @@ const {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm({ resolver: zodResolver(validateUpdateUserRoleSchema) });
 
   const role = ["admin", "staff", "doctor", "nurse", "patient"];
+const availability = ["available", "unavailable", "on leave", "sick"];
+  const specialization = [
+    "Cardiology",
+    "Dermatology",
+    "Gastroenterology",
+    "Neurology",
+    "Orthopedics",
+    "Pediatrics",
+    "Psychiatry",
+    "Urology",
+  ];
 
   useEffect(() => {
     if (item) {
       setValue("role", item.role);
     }
   }, [item, setValue]);
+
+    const fieldWatch = watch("role");
+    useEffect(() => {
+      if (fieldWatch === "doctor") {
+        setShowDoctor(true);
+      } else {
+        setShowDoctor(false);
+      }
+    }, [fieldWatch]);
 
   const mutation = useMutation({
     mutationFn: updateUserRole,
@@ -102,7 +124,7 @@ const {
             defaultValue={item.email}
           />
         </div> */}
-        <div className="col-span-12 md:col-span-6">
+        <div className="col-span-12">
           <label className="block mb-1 font-semibold">Role</label>
           <select
           id=""
@@ -113,7 +135,9 @@ const {
             disabled={isSubmitting}
           >
             <option value="">Select Role</option>
-            {role.map((option, index) => (
+            {role
+            ?.filter((roles) => roles !== "patient")
+            ?.map((option, index) => (
               <option key={index} value={option}>
                 {option.charAt(0).toUpperCase() + option.slice(1)}
               </option>
@@ -123,6 +147,59 @@ const {
             <span className="text-xs text-red-500">{errors.role?.message}</span>
           )}
         </div>
+
+             {showDoctor && (
+                <>
+                  <div className="col-span-12 md:col-span-6">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Specialization
+                    </label>
+                    <select
+                      defaultValue=""
+                      className="select capitalize w-full"
+                      {...register("specialization")}
+                      disabled={isSubmitting}
+                    >
+                      <option value="">Select Specialization</option>
+                      {specialization?.map((option, index) => (
+                        <option key={index} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.specialization?.message && (
+                      <span className="text-xs text-red-500">
+                        {errors.specialization?.message}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="col-span-12 md:col-span-6">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Availability
+                    </label>
+                    <select
+                      defaultValue=""
+                      className="select capitalize w-full"
+                      {...register("availability")}
+                      disabled={isSubmitting}
+                    >
+                      <option value="">Select Availability</option>
+                      {availability?.map((option, index) => (
+                        <option key={index} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.availability?.message && (
+                      <span className="text-xs text-red-500">
+                        {errors.availability?.message}
+                      </span>
+                    )}
+                  </div>
+                </>
+              )}
+
         <div className="col-span-12 flex justify-end gap-3 mt-6">
           <button
             type="button"
