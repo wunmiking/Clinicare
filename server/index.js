@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import cors from "cors";
-import dotenv  from "dotenv";
 
 
 // error handlers
@@ -15,8 +14,15 @@ import {
 // api routes
 import userRoutes from "./src/routes/userRoutes.js";
 import patientRoutes from "./src/routes/patientRoutes.js";
+import roomRoutes from "./src/routes/roomRoutes.js";
+import doctorRoutes from "./src/routes/doctorRoutes.js";
+import paymentRoutes from "./src/routes/paymentRoutes.js";
+import appointmentRoutes from "./src/routes/appointmentRoutes.js";
+import inpatientRoutes from "./src/routes/inpatientRoutes.js";
+import dashboardRoutes from "./src/routes/dashboardRoutes.js";
 
-dotenv.config()
+
+// dotenv.config()
 const {MONGODB_URI, MONGODB_DB_NAME, NODE_ENV} = process.env 
 
 // initialize our express app
@@ -67,6 +73,12 @@ app.get("/", (req, res) => {
 // assemble our api routes and endpoints. We will include other endpoints as we progress
 app.use("/api/v1/auth", userRoutes);
 app.use("/api/v1/patients", patientRoutes);
+app.use("/api/v1/rooms", roomRoutes);
+app.use("/api/v1/doctors", doctorRoutes);
+app.use("/api/v1/appointments", appointmentRoutes);
+app.use("/api/v1/inpatients", inpatientRoutes);
+app.use("/api/v1/payments", paymentRoutes);
+app.use("/api/v1/dashboard", dashboardRoutes);
 
 // handle route errors
 app.use(catchNotFound);
@@ -108,6 +120,7 @@ const connectDb = async () => {
     process.on("SIGTERM", gracefulShutdown); //a signal to terinate our process
     return conn;
   } catch (error) {
+    console.log(error)
     console.error("❌ Mongodb connection failed", error.message);
     process.exit(1); //this exits the process, 1 usually indicates error/failure
   }

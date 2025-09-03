@@ -257,7 +257,7 @@ export default function EditInPatient({ inpatient }) {
                 )}
               </div>
 
-                            <div className="md:col-span-6">
+                            {/* <div className="md:col-span-6">
                 <fieldset className="fieldset">
                   <legend className="fieldset-legend">Discharge Date</legend>
                   <input
@@ -272,7 +272,7 @@ export default function EditInPatient({ inpatient }) {
                     {errors.dischargeDate?.message}
                   </span>
                 )}
-              </div>
+              </div> */}
 
               <div className="md:col-span-12">
                 <fieldset className="fieldset relative">

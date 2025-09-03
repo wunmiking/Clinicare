@@ -24,7 +24,7 @@ export default function Logout() {
       navigate("/account/signin");
     },
     onError: (error) => {
-      console.log(error);
+      import.meta.env.DEV && console.log(error);
       toast.error(error?.response?.data?.message);
     },
   });

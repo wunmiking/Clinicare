@@ -38,8 +38,7 @@ export default function SignUp() {
   const mutation = useMutation({
     mutationFn: registerUser,
     onSuccess: (response) => {
-      // what yo want to do if api call is a success
-      // console.log(response);
+
       toast.success(response?.data?.message || "Registration successful");
       setAccessToken(response?.data?.data?.accessToken);
       if (!user?.isVerified) {
@@ -49,7 +48,7 @@ export default function SignUp() {
     },
     
     onError: (error) => {
-      console.log(error);
+      import.meta.env.DEV && console.log(error);
       setError(error?.response?.data?.message || "Registration failed");
     },
   });

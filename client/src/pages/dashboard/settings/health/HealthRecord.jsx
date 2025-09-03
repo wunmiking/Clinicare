@@ -71,7 +71,7 @@ export default function HealthRecord() {
       }
     },
     onError: (error) => {
-      console.log(error);
+      import.meta.env.DEV && console.log(error);
       setError(error?.response?.data?.message || "Error updating your profile");
     },
   });

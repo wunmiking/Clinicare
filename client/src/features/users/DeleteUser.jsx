@@ -32,7 +32,7 @@ export default function DeleteUser({ isOpen, onClose, item }) {
       }
     },
     onError: (error) => {
-    //   console.log(error);
+    import.meta.env.DEV && console.log(error);
       setError(error.response?.data?.message || "Error deleting user");
     },
   });

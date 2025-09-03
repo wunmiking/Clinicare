@@ -6,7 +6,7 @@ import { validateConfirmAppointmentSchema } from "@/utils/dataSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RiEditLine } from "@remixicon/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 
 export default function ConfirmAppointment({ appointment }) {
@@ -29,13 +29,15 @@ export default function ConfirmAppointment({ appointment }) {
     queryKey: ["getAppointmentsMeta", accessToken],
     queryFn: () => getAppointmentMeta(accessToken),
   });
-  const doctors = data?.data?.data?.doctorMeta || [];
-
-  const doctorsName = doctors?.map((doctor) => ({
-    id: doctor.userId._id,
-    name: doctor.userId.fullname,
-  }));
-
+  
+const doctorsName = useMemo(() => {
+    const doctors = data?.data?.data?.doctorMeta || [];
+    return doctors?.map((doctor) => ({
+      id: doctor.userId._id,
+      name: doctor.userId.fullname,
+    }));
+  }, [data?.data?.data]);
+  
   const status = ["scheduled", "confirmed", "cancelled"];
 
   const mutation = useMutation({

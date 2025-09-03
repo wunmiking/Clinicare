@@ -4,24 +4,24 @@ const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
   port: process.env.EMAIL_PORT,
   secure: false,
-  requireTLS: true, //upgrade to a secure conn once connected
+  requireTLS: true, //if we're using 587 port instead of 465 - it upgrades to a secure conn when connected
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASSWORD,
   },
   tls: {
-    //reject unauthorized cert in production, for security
+    // reject unauthorized cert in production, for security
     rejectUnauthorized: process.env.NODE_ENV === "production",
   },
 });
 
-//verify email service connection
+// verify email service connection
 const verifyEmailConnection = async () => {
   try {
     await transporter.verify();
-    console.log("✅ Email service connection verified");
+    console.log(`✅ Email service connection verified`);
   } catch (error) {
-    console.error("❌ Failed to connect to email service", {
+    console.error(`❌ Failed to connect to email service`, {
       error: error.message,
       code: error.code,
       stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
@@ -29,11 +29,12 @@ const verifyEmailConnection = async () => {
     throw new Error("Email service connection failed");
   }
 };
+
 verifyEmailConnection().catch(console.error);
 
 export const sendEmail = async ({ to, subject, html }) => {
   const mailOptions = {
-    from: "Clinicare <charlesmutob@gmail.com>",
+    from: "Clinicare <wunmiking@gmail.com>",
     to,
     subject,
     html,

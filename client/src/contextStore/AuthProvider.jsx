@@ -57,8 +57,7 @@ export default function AuthProvider({ children }) {
     enabled: !!accessToken,
   });
 
-  console.log(user);
-
+ 
   if (isAuthenticating) {
     return <LazyLoader />;
   }

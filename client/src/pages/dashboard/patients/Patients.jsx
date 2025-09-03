@@ -29,7 +29,6 @@ const {isPending, isError, data, error} = useQuery({
   queryFn: () => getAllPatients(searchParams, accessToken),
 });
 
-// console.log(data);
 
 const { handlePageChange, totalPages, hasMore, currentPage } = usePaginate({
     totalPages: data?.data?.data?.meta?.totalPages || 1,
@@ -39,7 +38,7 @@ const { handlePageChange, totalPages, hasMore, currentPage } = usePaginate({
 
 const patients = data?.data?.data?.patients || [];
 // const patients = users.filter((user) => user.role === "patient");
-console.log(patients);
+
 
 
    return (

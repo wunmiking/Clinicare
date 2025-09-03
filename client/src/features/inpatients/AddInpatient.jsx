@@ -177,7 +177,7 @@ export default function AddInpatient() {
                   )}
                 </fieldset>
               </div>
-              <div className="md:col-span-6">
+              <div className="md:col-span-12">
                 <fieldset className="fieldset">
                   <legend className="fieldset-legend">Select Room</legend>
                   <select
@@ -264,7 +264,9 @@ export default function AddInpatient() {
                 />
               </div> */}
 
-                <div className="md:col-span-6">
+                {/* the above is Mr. Charles code */}
+
+                {/* <div className="md:col-span-6">
                 <fieldset className="fieldset">
                   <legend className="fieldset-legend">Discharge Date</legend>
                   <input
@@ -279,7 +281,9 @@ export default function AddInpatient() {
                     {errors.dischargeDate?.message}
                   </span>
                 )}
-              </div>
+              </div> */}
+
+              {/* the above is being handled automatically from the backend */}
 
               <div className="md:col-span-12">
                 <fieldset className="fieldset relative">

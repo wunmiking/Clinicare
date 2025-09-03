@@ -25,8 +25,7 @@ export default function Rooms() {
     queryKey: ["getAllRooms", page, limit, query, roomType, roomStatus],
     queryFn: () => getAllRooms(searchParams, accessToken),
   });
-  // console.log(data);
-
+  
   const { handlePageChange, totalPages, hasMore, currentPage } = usePaginate({
     totalPages: data?.data?.data?.meta?.totalPages || 1,
     hasMore: data?.data?.data?.meta?.hasMore || false,

@@ -24,7 +24,6 @@ export default function CreatePayment() {
     queryFn: () => getAppointmentMeta(accessToken),
   });
 
-  console.log(data);
 
   const metaData = data?.data?.data;
   const {

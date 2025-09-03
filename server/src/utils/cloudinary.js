@@ -37,7 +37,6 @@ export const uploadToCloudinary = async (file, options = {}) => {
       file,
       defaultOptions
     );
-    console.log(uploadResponse)
     return {
       url: uploadResponse.secure_url,
       public_id: uploadResponse.public_id,

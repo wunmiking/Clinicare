@@ -32,7 +32,7 @@ export default function Paystack({ payment }) {
   });
 
   const handlePaystackSuccessAction = (reference) => {
-    console.log(reference);
+   
     mutation.mutate({
       paymentId: payment._id,
       reference: reference.reference,

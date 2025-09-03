@@ -9,7 +9,7 @@ export default function Sidebar({ user }) {
   const navigate = useNavigate();
   const location = useLocation();
   const path = location.pathname;
-  console.log();
+  
 
   const roles = ["patient", "doctor", "admin", "nurse", "staff"];
 
@@ -24,11 +24,14 @@ export default function Sidebar({ user }) {
     (userRole === "nurse" && roleBasedPathPermissions.nurse.allowedSubpaths) ||
     (userRole === "staff" && roleBasedPathPermissions.staff.allowedSubpaths);
 
-    useEffect(() => {
-      if (!isAuthorized.includes(path)) {
-        navigate("/dashboard");
-      }
-    }, [isAuthorized, navigate, path, userRole]);
+useEffect(() => {
+    const allowedPaths =
+      roleBasedPathPermissions[userRole]?.allowedSubpaths || [];
+    const isPathAllowed = allowedPaths.includes(path);
+    if (!isAuthorized || !isPathAllowed) {
+      navigate("/dashboard");
+    }
+  }, [isAuthorized, navigate, path, userRole]);
 
   return (
     <aside className="hidden bg-slate-100 lg:block min-h-screen fixed z-50 w-[200px]">

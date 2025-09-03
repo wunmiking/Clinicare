@@ -2,7 +2,6 @@ import { getAllInpatients } from "@/api/inpatients";
 import PageWrapper from "@/components/PageWrapper";
 import Search from "@/components/Search";
 import AddInpatient from "@/features/inpatients/AddInpatient";
-import Filter from "@/features/inpatients/Filter";
 import usePaginate from "@/hooks/usePaginate";
 import { useAuth } from "@/store";
 import { useQuery } from "@tanstack/react-query";
@@ -11,6 +10,7 @@ import ErrorAlert from "@/components/ErrorAlert";
 import { lazy, Suspense } from "react";
 import { SkeletonTable } from "@/components/LazyLoader";
 import Paginate from "@/components/Paginate";
+import Filter from "@/features/inpatients/Filter";
 const Table = lazy(() => import("@/features/inpatients/Table"));
 
 export default function Inpatients() {
@@ -34,6 +34,7 @@ export default function Inpatients() {
     ],
     queryFn: () => getAllInpatients(searchParams, accessToken),
   });
+
   const { handlePageChange, totalPages, hasMore, currentPage } = usePaginate({
     totalPages: data?.data?.data?.meta?.totalPages || 1,
     hasMore: data?.data?.data?.meta?.hasMore || false,
@@ -41,6 +42,8 @@ export default function Inpatients() {
   });
   const inpatients = data?.data?.data?.inpatients || [];
   
+  
+
   return (
     <PageWrapper>
       <div className="flex justify-between items-center">

@@ -40,8 +40,7 @@ export default function SignIn() {
   const mutation = useMutation({
     mutationFn: loginUser,
     onSuccess: (response) => {
-      // what yo want to do if api call is a success
-      // console.log(response);
+ 
       toast.success(response?.data?.message || "Login successful");
       setAccessToken(response?.data?.data?.accessToken);
       if (!user?.isVerified) {
@@ -50,7 +49,7 @@ export default function SignIn() {
     },
     //save accessToken
     onError: (error) => {
-      console.log(error);
+      import.meta.env.DEV && console.log(error);
       setError(error?.response?.data?.message || "Login failed");
     },
   });

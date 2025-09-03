@@ -24,8 +24,7 @@ export default function ResetPassword() {
   //look for values on our url bar
   const email = searchParams.get("email");
   const token = searchParams.get("token");
-  // console.log({ email, token });
-
+ 
   const togglePassword = () => {
     setIsVisible((prev) => !prev);
   };
@@ -33,13 +32,12 @@ export default function ResetPassword() {
   const mutation = useMutation({
     mutationFn: resetPassword,
     onSuccess: (response) => {
-      //what you want to do if api call is a success.
-      // console.log(response);
+
       toast.success(response?.data?.message);
       navigate("/account/signin");
     },
     onError: (error) => {
-      console.log(error);
+      import.meta.env.DEV && console.log(error);
       setError(error?.response?.data?.message);
     },
   });

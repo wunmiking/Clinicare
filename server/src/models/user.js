@@ -1,3 +1,4 @@
+
 import mongoose, { Schema, model } from "mongoose";
 
 const userSchema = new Schema(
@@ -25,7 +26,6 @@ const userSchema = new Schema(
     },
     phone: {
       type: String,
-      maxlength: [14, "Phone number must not exceed 11 digits"],
     },
     avatar: {
       type: String,

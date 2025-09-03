@@ -37,7 +37,7 @@ export default function Appointments() {
   });
 
   const appointment = data?.data?.data?.appointments || [];
-  console.log("apps:", appointment);
+
   const {
     handlePageChange,
     totalPages,

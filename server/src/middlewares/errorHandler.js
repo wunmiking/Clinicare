@@ -1,7 +1,7 @@
 import responseHandler from "../utils/responseHandler.js";
 const { errorResponse } = responseHandler;
 
-//error handler for dev environment
+// error handler for dev environment
 const sendErrorDev = (err, res) => {
   const errResponse = {
     status: err.status || "error",
@@ -17,9 +17,9 @@ const sendErrorDev = (err, res) => {
   res.status(err.statusCode || 500).json(errResponse);
 };
 
-//send error for prod environment
+// send error for prod environment
 const sendErrorProd = (err, res) => {
-  //if operational is set to true, then we send a msg to client
+  // If Operational is set to true, then we send a message to client
   if (err.isOperational) {
     const errResponse = {
       status: err.status || "error",
@@ -27,26 +27,27 @@ const sendErrorProd = (err, res) => {
     };
     return res.status(err.statusCode || 500).json(errResponse);
   }
-  //programming errors or unknown erros: don't leak to errors to client
+  //   for prog or unknown errors - don't leak to client
   console.error("ERROR", err);
   return res.status(err.statusCode).json({
     status: "error",
-    message: "Something went wrong",
+    message: "Unidentified error",
   });
 };
 
-//Handle JWT ERRORS
+// handle json web token (JWT) errors
 const handleJWTError = () => {
-  return errorResponse("Invalid token. Please log in again", 401);
+  return errorResponse("Invalid Token. Please login again", 401);
 };
+
 const handleJWTExpiredError = () => {
   return errorResponse("Your token has expired! Please login again", 401);
 };
 
-//Main error handler middleware
+// main error handler for the middleware (index.js)
 export const globalErrorHandler = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
-  err.status = err.status || "error";
+  err.status = err.status || "Error";
   if (process.env.NODE_ENV === "development") {
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === "production") {
@@ -57,7 +58,7 @@ export const globalErrorHandler = (err, req, res, next) => {
   }
 };
 
-//Catch 404 error routes
+// catch 404 error routes - usually seen in dev mode, can detect errors in sent APIs
 export const catchNotFound = (req, res) => {
-  errorResponse(`Cant find ${req.originalUrl} on this server!`, 404);
+  errorResponse(`Can't find ${req.originalUrl} on this server`, 404);
 };

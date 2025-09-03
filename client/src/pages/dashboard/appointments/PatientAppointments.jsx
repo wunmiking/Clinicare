@@ -36,10 +36,8 @@ export default function PatientAppointments() {
     ],
     queryFn: () => getPatientsAppointment(searchParams, accessToken),
   });
-  console.log(data);
-
+ 
   const patientsAppointment = data?.data?.data?.appointments || [];
-  console.log("apps:", patientsAppointment);
 
   const {
     handlePageChange,

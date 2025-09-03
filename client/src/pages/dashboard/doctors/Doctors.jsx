@@ -31,10 +31,9 @@ export default function Doctors() {
     ],
     queryFn: () => getAllDoctors(searchParams, accessToken),
   });
-  console.log(data);
 
   const doctors = data?.data?.data?.doctors || [];
-  console.log("doctors:", doctors);
+  
 
   const {
     handlePageChange,

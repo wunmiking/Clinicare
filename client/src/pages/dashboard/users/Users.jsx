@@ -26,8 +26,7 @@ export default function Users() {
     queryKey: ["getAllUsers", page, limit, query, role],
     queryFn: () => getAllUsers(searchParams, accessToken),
   });
-  // console.log(data);
-
+ 
   const { handlePageChange, totalPages, hasMore, currentPage } = usePaginate({
     totalPages: data?.data?.data?.meta?.totalPages || 1,
     hasMore: data?.data?.data?.meta?.hasMore || false,

@@ -34,13 +34,20 @@ export default function BookAppointment() {
       }
     },
     onError: (error) => {
-      console.log(error);
+      import.meta.env.DEV && console.log(error);
       setError(error?.response?.data?.message || "Error booking appointment");
     },
   });
 
   const resetModal = async () => {
-    await queryClient.invalidateQueries({ queryKey: ["getPatientsAppointment"] });
+    await Promise.all([
+      queryClient.invalidateQueries({
+        queryKey: ["getPatientAppointments"],
+      }),
+      queryClient.invalidateQueries({
+        queryKey: ["getAllAppointments"],
+      }),
+    ]);
     setIsOpen(false);
     setShowSuccess(false);
     setError(null);
