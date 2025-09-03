@@ -12,8 +12,8 @@ const OnboardLayout = lazy(() => import("@/layouts/OnboardLayout"));
 const DashboardLayout = lazy(() => import("@/layouts/DashboardLayout"));
 const Home = lazy(() => import("@/pages/home/Home"));
 const Contact = lazy(() => import("@/pages/contact/Contact"));
-const Signin = lazy(() => import("@/pages/account/signin/SignIn"));
-const Signup = lazy(() => import("@/pages/account/signup/SignUp"));
+const SignIn = lazy(() => import("@/pages/account/signin/SignIn"));
+const SignUp = lazy(() => import("@/pages/account/signup/SignUp"));
 const VerifyAccount = lazy(() => import("@/pages/verifyAccount/VerifyAccount"));
 const PatientOnboard = lazy(() =>
   import("@/pages/patientsOnboard/PatientsOnboard")
@@ -100,7 +100,7 @@ export default function AppRoutes() {
           path: "signin",
           element: (
             <Suspense fallback={<LazyLoader />}>
-              <Signin />
+              <SignIn />
             </Suspense>
           ),
         },
@@ -108,7 +108,7 @@ export default function AppRoutes() {
           path: "signup",
           element: (
             <Suspense fallback={<LazyLoader />}>
-              <Signup />
+              <SignUp />
             </Suspense>
           ),
         },
